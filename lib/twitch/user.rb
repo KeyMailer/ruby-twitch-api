@@ -3,6 +3,8 @@
 module Twitch
   # Data object for Twitch users
   class User
+    DATE_ATTRIBUTES = %i[created_at].freeze
+
     # ID of the user.
     attr_reader :id
     # Unformatted (lowercase) username of the user.
@@ -24,10 +26,16 @@ module Twitch
     attr_reader :offline_image_url
     # Total number of visits to the user's stream page.
     attr_reader :view_count
+    # Date when the user was created..
+    attr_reader :created_at
 
     def initialize(attributes = {})
       attributes.each do |key, value|
-        instance_variable_set "@#{key}", value
+        if DATE_ATTRIBUTES.include?(key.to_sym)
+          instance_variable_set("@#{key}", Time.parse(value)) unless value.empty?
+        else
+          instance_variable_set("@#{key}", value)
+        end
       end
     end
   end

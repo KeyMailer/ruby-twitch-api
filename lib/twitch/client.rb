@@ -16,6 +16,8 @@ require_relative 'stream_marker'
 require_relative 'user'
 require_relative 'user_follow'
 require_relative 'video'
+require_relative 'channel'
+require_relative 'event_sub'
 
 module Twitch
   # Core class for requests
@@ -105,13 +107,19 @@ module Twitch
     require_relative 'client/users'
     include Users
 
+    require_relative 'client/channels'
+    include Channels
+
+    require_relative 'client/event_subs'
+    include EventSubs
+
     private
 
     def initialize_response(data_class, http_response)
       Response.new(data_class, http_response: http_response)
     end
 
-    %w[get post put].each do |http_method|
+    %w[get post put patch].each do |http_method|
       define_method http_method do |resource, params|
         http_response = CONNECTION.public_send http_method, resource, params
 

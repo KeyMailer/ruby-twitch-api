@@ -8,6 +8,12 @@ module Twitch
         initialize_response Game, get('games', options)
       end
 
+      # Search Games/Categories
+      # https://dev.twitch.tv/docs/api/reference#search-categories
+      def search_games(options = {})
+        initialize_response Game, get('search/categories', options)
+      end
+
       def get_top_games(options = {})
         initialize_response Game, get('games/top', options)
       end

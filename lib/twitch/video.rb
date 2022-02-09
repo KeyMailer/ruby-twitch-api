@@ -35,11 +35,13 @@ module Twitch
     attr_reader :viewable
     # Duration of the video, in the format `0h0m0s`
     attr_reader :duration
+    # ID of the stream that the video originated from if the type is "archive". Otherwise set to null.
+    attr_reader :stream_id
 
     def initialize(attributes = {})
       attributes.each do |key, value|
         if DATE_ATTRIBUTES.include?(key.to_sym)
-          instance_variable_set("@#{key}", Time.parse(value))
+          instance_variable_set("@#{key}", Time.parse(value)) unless value.empty?
         else
           instance_variable_set("@#{key}", value)
         end
