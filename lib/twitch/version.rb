@@ -2,5 +2,5 @@
 
 module Twitch
   # Library version.
-  VERSION = '0.5.0rc1'
+  VERSION = '0.5.0'
 end
