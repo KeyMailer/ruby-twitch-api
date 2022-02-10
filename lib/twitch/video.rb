@@ -41,7 +41,7 @@ module Twitch
     def initialize(attributes = {})
       attributes.each do |key, value|
         if DATE_ATTRIBUTES.include?(key.to_sym)
-          instance_variable_set("@#{key}", Time.parse(value)) unless value.empty?
+          instance_variable_set("@#{key}", Time.parse(value)) unless value.nil? || value.empty?
         else
           instance_variable_set("@#{key}", value)
         end
