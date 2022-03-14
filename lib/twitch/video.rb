@@ -39,6 +39,8 @@ module Twitch
     attr_reader :stream_id
 
     def initialize(attributes = {})
+      # Seen twitch returning stream_id of '1' for highlights, remove it unless the video is an archive
+      attributes.delete('stream_id') unless attributes['type'] == 'archive'
       attributes.each do |key, value|
         if DATE_ATTRIBUTES.include?(key.to_sym)
           instance_variable_set("@#{key}", Time.parse(value)) unless value.nil? || value.empty?
