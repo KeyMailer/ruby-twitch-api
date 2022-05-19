@@ -22,17 +22,8 @@ require_relative 'event_sub'
 module Twitch
   # Core class for requests
   class Client
-    # Base connection to Helix API.
-    CONNECTION = Faraday.new(
-      'https://api.twitch.tv/helix', {
-        headers: { 'User-Agent': "twitch-api ruby client #{Twitch::VERSION}" }
-      }
-    ) do |faraday|
-      faraday.request :json
-      faraday.response :json
-    end
 
-    attr_reader :tokens
+    attr_reader :tokens, :connection
 
     # Initializes a Twitch client.
     #
@@ -63,7 +54,18 @@ module Twitch
         **options.slice(:access_token, :refresh_token), token_type: @token_type
       )
 
-      CONNECTION.headers['Client-ID'] = client_id
+      # Base connection to Helix API.
+      @connection = Faraday.new(
+        'https://api.twitch.tv/helix', {
+          headers: {
+            'User-Agent': "twitch-api ruby client #{Twitch::VERSION}",
+            'Client-ID': client_id
+          }
+        }
+      ) do |faraday|
+        faraday.request :json
+        faraday.response :json
+      end
 
       renew_authorization_header if access_token
     end
@@ -121,7 +123,7 @@ module Twitch
 
     %w[get post put patch delete].each do |http_method|
       define_method http_method do |resource, params|
-        http_response = CONNECTION.public_send http_method, resource, params
+        http_response = @connection.public_send http_method, resource, params
 
         raise APIError.new(http_response.status, http_response.body) unless http_response.success?
 
@@ -130,12 +132,12 @@ module Twitch
     end
 
     def renew_authorization_header
-      CONNECTION.headers['Authorization'] = "Bearer #{access_token}"
+      @connection.headers['Authorization'] = "Bearer #{access_token}"
     end
 
     def request(http_method, *args)
       Retriable.with_context(:twitch) do
-        CONNECTION.public_send http_method, *args
+        @connection.public_send http_method, *args
       end
     end
 
