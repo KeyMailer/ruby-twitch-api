@@ -8,9 +8,7 @@ module Twitch
       # Gets channel information for users.
       # https://dev.twitch.tv/docs/api/reference#get-channel-information
       def get_channels(options = {})
-        require_access_token do
-          initialize_response Channel, get('channels', options)
-        end
+        initialize_response Channel, get('channels', options)
       end
 
       # Returns a list of channels that match the query
@@ -28,11 +26,14 @@ module Twitch
       # Gets a list of users who have editor permissions for a specific channel
       # https://dev.twitch.tv/docs/api/reference#get-channel-editors
       def get_editors(options = {})
-        require_access_token do
-          initialize_response ChannelEditor, get('channels/editors', options)
-        end
+        initialize_response ChannelEditor, get('channels/editors', options)
       end
 
+      # Gets a list of users that follow the specified broadcaster.
+      # https://dev.twitch.tv/docs/api/reference/#get-channel-followers
+      def get_channel_followers(options = {})
+        initialize_response ChannelFollower, get('channels/followers', options)
+      end
     end
   end
 end

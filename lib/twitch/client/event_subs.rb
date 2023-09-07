@@ -6,9 +6,7 @@ module Twitch
       # Get EventSub Subscriptions
       # https://dev.twitch.tv/docs/api/reference#get-eventsub-subscriptions
       def eventsub_get_subscriptions(options = {})
-        require_access_token do
-          initialize_response EventSub, get('eventsub/subscriptions', options)
-        end
+        initialize_response EventSub, get('eventsub/subscriptions', options)
       end
 
       # Create EventSub Subscription
