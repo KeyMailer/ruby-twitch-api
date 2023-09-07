@@ -2,7 +2,7 @@
 
 module Twitch
   # Represents a relationship of one user following another.
-  class ChannelFollowers
+  class ChannelFollower
 
     DATE_ATTRIBUTES = %i[followed_at].freeze
 
