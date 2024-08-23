@@ -40,13 +40,14 @@ module Twitch
       @http_response = http_response
       @raw = @http_response
 
-      @data = parse_data data_class
+      unless body.nil?
+        @data = parse_data data_class
+        @pagination = body['pagination']
+        @total = body['total']
+        @date_range = body['date_range']
+      end
 
       parse_rate_limits
-
-      @pagination = body['pagination']
-      @total = body['total']
-      @date_range = body['date_range']
     end
 
     private

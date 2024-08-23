@@ -11,6 +11,7 @@ require_relative 'api_error'
 require_relative 'bits_leader'
 require_relative 'category'
 require_relative 'channel'
+require_relative 'channel_follower'
 require_relative 'cheermote'
 require_relative 'clip'
 require_relative 'custom_reward'
@@ -108,39 +109,8 @@ module Twitch
     require_relative 'client/custom_rewards'
     include CustomRewards
 
-    ## https://dev.twitch.tv/docs/api/reference#get-channel-information
-    def get_channels(options = {})
-      initialize_response Channel, get('channels', options)
-    end
-
-    ## https://dev.twitch.tv/docs/api/reference/#search-channels
-    def search_channels(options = {})
-      initialize_response Channel, get('search/channels', options)
-    end
-
-    ## https://dev.twitch.tv/docs/api/reference#modify-channel-information
-    def modify_channel(options = {})
-      response = patch('channels', options)
-
-      return true if response.body.empty?
-
-      response.body
-    end
-
-    ## https://dev.twitch.tv/docs/api/reference/#start-commercial
-    def start_commercial(options = {})
-      initialize_response nil, post('channels/commercial', options)
-    end
-
-    ## https://dev.twitch.tv/docs/api/reference/#get-channel-editors
-    def get_channel_editors(options = {})
-      initialize_response Editor, get('channels/editors', options)
-    end
-
-    ## https://dev.twitch.tv/docs/api/reference/#search-categories
-    def search_categories(options = {})
-      initialize_response Category, get('search/categories', options)
-    end
+    require_relative 'client/channels'
+    include Channels
 
     private
 
