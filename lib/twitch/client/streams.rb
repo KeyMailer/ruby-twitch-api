@@ -16,9 +16,9 @@ module Twitch
         initialize_response Stream, get('streams', options)
       end
 
-      ## TODO: Can't find this method in documentation, test it
+      ## https://discuss.dev.twitch.tv/t/deprecation-of-the-helix-get-streams-metadata-endpoint/26407
       def get_streams_metadata(options = {})
-        initialize_response StreamMetadata, get('streams/metadata', options)
+        raise APIError(400, 'This API is no longer available.')
       end
 
       def get_stream_key(options = {})
