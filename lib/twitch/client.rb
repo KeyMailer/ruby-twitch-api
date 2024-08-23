@@ -17,6 +17,7 @@ require_relative 'clip'
 require_relative 'custom_reward'
 require_relative 'editor'
 require_relative 'entitlement_grant_url'
+require_relative 'event_sub'
 require_relative 'extension'
 require_relative 'extensions_by_types'
 require_relative 'game'
@@ -118,7 +119,7 @@ module Twitch
       Response.new(data_class, http_response: http_response)
     end
 
-    %w[get post put patch].each do |http_method|
+    %w[get post put patch delete].each do |http_method|
       define_method http_method do |resource, params|
         request http_method, resource, params
       end
