@@ -116,6 +116,9 @@ module Twitch
     require_relative 'client/channels'
     include Channels
 
+    require_relative 'client/event_subs'
+    include EventSubs
+
     private
 
     def initialize_response(data_class, http_response)
