@@ -36,22 +36,8 @@ require_relative 'video'
 module Twitch
   # Core class for requests
   class Client
-    # Base connection to Helix API.
-    CONNECTION = Faraday.new(
-      'https://api.twitch.tv/helix', {
-        headers: { 'User-Agent': "twitch-api ruby client #{Twitch::VERSION}" }
-      }
-    ) do |faraday|
-      faraday.request :retry,
-        exceptions: [*Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed]
 
-      faraday.response :parse_dates
-
-      faraday.request :json
-      faraday.response :json
-    end
-
-    attr_reader :tokens
+    attr_reader :tokens, :connection
 
     # Initializes a Twitch client.
     #
@@ -60,7 +46,24 @@ module Twitch
     def initialize(tokens:)
       @tokens = tokens
 
-      CONNECTION.headers['Client-ID'] = self.tokens.client.client_id
+      # Base connection to Helix API.
+      @connection = Faraday.new(
+        'https://api.twitch.tv/helix',
+        {
+          headers: {
+            'User-Agent': "twitch-api ruby client #{Twitch::VERSION}",
+            'Client-ID': self.tokens.client.client_id
+          }
+        }
+      ) do |faraday|
+        faraday.request :retry,
+                        exceptions: [*Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed]
+
+        faraday.response :parse_dates
+
+        faraday.request :json
+        faraday.response :json
+      end
 
       renew_authorization_header
     end
@@ -126,16 +129,16 @@ module Twitch
     end
 
     def renew_authorization_header
-      CONNECTION.headers['Authorization'] = "Bearer #{tokens.access_token}"
+      @connection.headers['Authorization'] = "Bearer #{tokens.access_token}"
     end
 
     def request(http_method, resource, params)
-      http_response = CONNECTION.public_send http_method, resource, params
+      http_response = @connection.public_send http_method, resource, params
 
       if http_response.status == 401
         renew_authorization_header
 
-        http_response = CONNECTION.public_send http_method, resource, params
+        http_response = @connection.public_send http_method, resource, params
       end
 
       return http_response if http_response.success?
