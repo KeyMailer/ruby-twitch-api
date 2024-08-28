@@ -40,7 +40,7 @@ module Twitch
       @http_response = http_response
       @raw = @http_response
 
-      unless body.nil?
+      unless body.nil? || data_class == NilClass
         @data = parse_data data_class
         @pagination = body['pagination']
         @total = body['total']
